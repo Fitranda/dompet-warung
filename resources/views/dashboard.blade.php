@@ -4,7 +4,13 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold" style="color: #0F172A;">Dashboard Akuntansi</h1>
+                {{-- <h                            @php
+                                $recentJournalEntries = \App\Models\JournalEntry::where('umkm_id', Auth::user()->umkm_id)
+                                    ->with(['user'])
+                                    ->orderBy('created_at', 'desc')
+                                    ->take(5)
+                                    ->get();
+                            @endphps="text-xl sm:text-2xl md:text-3xl font-bold" style="color: #0F172A;">Dashboard Akuntansi</h1> --}}
                 <p class="mt-1 flex items-center text-xs sm:text-sm md:text-base" style="color: #334155;">
                     <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-2" style="color: #14B8A6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -37,7 +43,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-medium truncate" style="color: #64748B;">Total Akun</p>
-                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\Account::count() }}</p>
+                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\Account::where('umkm_id', Auth::user()->umkm_id)->count() }}</p>
                         <p class="text-xs truncate" style="color: #14B8A6;">Chart of Accounts</p>
                     </div>
                 </div>
@@ -51,7 +57,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-medium truncate" style="color: #64748B;">Transaksi Bulan Ini</p>
-                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\Transaction::whereMonth('transaction_date', now()->month)->count() }}</p>
+                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\JournalEntry::where('umkm_id', Auth::user()->umkm_id)->whereMonth('tanggal', now()->month)->count() }}</p>
                         <p class="text-xs truncate" style="color: #67E8F9;">{{ now()->format('F Y') }}</p>
                     </div>
                 </div>
@@ -65,7 +71,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-medium truncate" style="color: #64748B;">Aset Aktif</p>
-                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\Account::where('type', 'asset')->where('is_active', true)->count() }}</p>
+                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\Account::where('umkm_id', Auth::user()->umkm_id)->where('tipe_akun', 'aset')->where('is_active', true)->count() }}</p>
                         <p class="text-xs truncate" style="color: #0F172A;">Assets</p>
                     </div>
                 </div>
@@ -79,7 +85,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-medium truncate" style="color: #64748B;">Saldo Awal Set</p>
-                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\OpeningBalance::count() }}</p>
+                        <p class="text-xl md:text-2xl font-bold" style="color: #0F172A;">{{ \App\Models\OpeningBalance::where('umkm_id', Auth::user()->umkm_id)->count() }}</p>
                         <p class="text-xs truncate" style="color: #334155;">Opening Balance</p>
                     </div>
                 </div>
@@ -101,35 +107,36 @@
                         </h3>
                         <div class="space-y-3 md:space-y-4">
                             @php
-                                $accountTypes = \App\Models\Account::selectRaw('type, COUNT(*) as count')
-                                    ->groupBy('type')
+                                $accountTypes = \App\Models\Account::where('umkm_id', Auth::user()->umkm_id)
+                                    ->selectRaw('tipe_akun, COUNT(*) as count')
+                                    ->groupBy('tipe_akun')
                                     ->get();
                                 $total = $accountTypes->sum('count');
                                 $colors = [
-                                    'asset' => ['bg-blue-500', 'bg-blue-50', 'text-blue-700', 'border-blue-200'],
-                                    'liability' => ['bg-red-500', 'bg-red-50', 'text-red-700', 'border-red-200'],
-                                    'equity' => ['bg-green-500', 'bg-green-50', 'text-green-700', 'border-green-200'],
-                                    'revenue' => ['bg-purple-500', 'bg-purple-50', 'text-purple-700', 'border-purple-200'],
-                                    'expense' => ['bg-orange-500', 'bg-orange-50', 'text-orange-700', 'border-orange-200']
+                                    'aset' => ['bg-blue-500', 'bg-blue-50', 'text-blue-700', 'border-blue-200'],
+                                    'kewajiban' => ['bg-red-500', 'bg-red-50', 'text-red-700', 'border-red-200'],
+                                    'modal' => ['bg-green-500', 'bg-green-50', 'text-green-700', 'border-green-200'],
+                                    'pendapatan' => ['bg-purple-500', 'bg-purple-50', 'text-purple-700', 'border-purple-200'],
+                                    'beban' => ['bg-orange-500', 'bg-orange-50', 'text-orange-700', 'border-orange-200']
                                 ];
                                 $typeNames = [
-                                    'asset' => 'Aset',
-                                    'liability' => 'Kewajiban',
-                                    'equity' => 'Modal',
-                                    'revenue' => 'Pendapatan',
-                                    'expense' => 'Beban'
+                                    'aset' => 'Aset',
+                                    'kewajiban' => 'Kewajiban',
+                                    'modal' => 'Modal',
+                                    'pendapatan' => 'Pendapatan',
+                                    'beban' => 'Beban'
                                 ];
                             @endphp
                             @foreach($accountTypes as $type)
                                 @php
                                     $percentage = $total > 0 ? round(($type->count / $total) * 100, 1) : 0;
-                                    $color = $colors[$type->type] ?? ['bg-gray-500', 'bg-gray-50', 'text-gray-700', 'border-gray-200'];
+                                    $color = $colors[$type->tipe_akun] ?? ['bg-gray-500', 'bg-gray-50', 'text-gray-700', 'border-gray-200'];
                                 @endphp
                                 <div class="p-3 {{ $color[1] }} rounded-lg border {{ $color[3] }}">
                                     <div class="flex items-center justify-between mb-2">
                                         <div class="flex items-center space-x-2 md:space-x-3 min-w-0 flex-1">
                                             <div class="w-3 h-3 rounded-full {{ $color[0] }} flex-shrink-0"></div>
-                                            <span class="text-sm font-medium text-gray-900 truncate">{{ $typeNames[$type->type] ?? ucfirst($type->type) }}</span>
+                                            <span class="text-sm font-medium text-gray-900 truncate">{{ $typeNames[$type->tipe_akun] ?? ucfirst($type->tipe_akun) }}</span>
                                         </div>
                                         <div class="flex items-center space-x-2 flex-shrink-0">
                                             <span class="text-base md:text-lg font-bold text-gray-900">{{ $type->count }}</span>
@@ -171,12 +178,12 @@
                         </h3>
                         <div class="space-y-2 md:space-y-3">
                             @php
-                                $recentTransactions = \App\Models\Transaction::with('user')
+                                $recentJournalEntries = \App\Models\JournalEntry::with('user')
                                     ->orderBy('created_at', 'desc')
                                     ->take(5)
                                     ->get();
                             @endphp
-                            @forelse($recentTransactions as $transaction)
+                            @forelse($recentJournalEntries as $entry)
                                 <div class="flex items-center space-x-3 md:space-x-4 p-3 md:p-4 bg-gray-50 rounded-lg border border-gray-100 hover:bg-blue-50 hover:border-blue-200 transition-all duration-200">
                                     <div class="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,20 +191,22 @@
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-semibold text-gray-900 truncate">{{ $transaction->description }}</p>
+                                        <p class="text-sm font-semibold text-gray-900 truncate">{{ $entry->keterangan }}</p>
                                         <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-1">
-                                            <p class="text-xs text-gray-500">{{ $transaction->transaction_date->format('d M Y') }}</p>
+                                            <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($entry->tanggal)->format('d M Y') }}</p>
                                             <span class="hidden sm:inline text-gray-300">•</span>
-                                            <p class="text-xs text-gray-500">{{ $transaction->user->name }}</p>
+                                            <p class="text-xs text-gray-500">{{ $entry->user->name ?? 'System' }}</p>
                                         </div>
                                     </div>
                                     <div class="text-right flex-shrink-0">
                                         <div class="text-xs md:text-sm font-bold text-green-600">
-                                            Rp {{ number_format($transaction->total_amount, 0, ',', '.') }}
+                                            Rp {{ number_format($entry->total_debit, 0, ',', '.') }}
                                         </div>
                                         <div class="text-xs text-gray-400">
-                                            {{ $transaction->created_at->diffForHumans() }}
+                                            {{ $entry->created_at->diffForHumans() }}
                                         </div>
+                                    </div>
+                                </div>
                             @empty
                                 <div class="text-center py-6 md:py-8">
                                     <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
@@ -206,7 +215,7 @@
                                         </svg>
                                     </div>
                                     <p class="text-sm text-gray-500 mb-2">Belum ada transaksi</p>
-                                    <a href="{{ route('transactions.create') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <a href="{{ route('journal-entries.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                         </svg>
@@ -215,9 +224,9 @@
                                 </div>
                             @endforelse
                         </div>
-                        @if($recentTransactions->count() > 0)
+                        @if($recentJournalEntries->count() > 0)
                         <div class="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-100">
-                            <a href="{{ route('transactions.index') }}" class="block text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            <a href="{{ route('journal-entries.index') }}" class="block text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
                                 Lihat semua transaksi →
                             </a>
                         </div>
@@ -255,15 +264,15 @@
                                 </svg>
                             </a>
 
-                            <a href="{{ route('transactions.index') }}" class="flex items-center p-3 md:p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl hover:from-green-100 hover:to-green-200 hover:shadow-md transition-all duration-200 group border border-green-200">
+                            <a href="{{ route('accounts.create') }}" class="flex items-center p-3 md:p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl hover:from-green-100 hover:to-green-200 hover:shadow-md transition-all duration-200 group border border-green-200">
                                 <div class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 group-hover:from-green-600 group-hover:to-green-700 transition-all duration-200 shadow-lg">
                                     <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                     </svg>
                                 </div>
                                 <div class="flex-grow min-w-0">
-                                    <h4 class="font-semibold text-gray-900 group-hover:text-green-600 transition-colors text-sm md:text-base">Input Jurnal Umum</h4>
-                                    <p class="text-xs md:text-sm text-gray-600 truncate">Catat transaksi harian</p>
+                                    <h4 class="font-semibold text-gray-900 group-hover:text-green-600 transition-colors text-sm md:text-base">Tambah Akun Baru</h4>
+                                    <p class="text-xs md:text-sm text-gray-600 truncate">Tambah kode akun untuk transaksi</p>
                                 </div>
                                 <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-green-600 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -319,43 +328,7 @@
                                 </div>
                             </a>
 
-                            <a href="{{ route('reports.trial-balance') }}" class="block p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 hover:shadow-md transition-all duration-200 group">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                                            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-medium text-gray-900 group-hover:text-indigo-600">Neraca Saldo</h4>
-                                            <p class="text-sm text-gray-600">Neraca saldo periode tertentu</p>
-                                        </div>
-                                    </div>
-                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </div>
-                            </a>
 
-                            <a href="{{ route('reports.worksheet') }}" class="block p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 hover:shadow-md transition-all duration-200 group">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                                            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-medium text-gray-900 group-hover:text-indigo-600">Neraca Lajur</h4>
-                                            <p class="text-sm text-gray-600">Worksheet untuk penyesuaian</p>
-                                        </div>
-                                    </div>
-                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </div>
-                            </a>
 
                             <a href="{{ route('reports.income-statement') }}" class="block p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 hover:shadow-md transition-all duration-200 group">
                                 <div class="flex items-center justify-between">
@@ -385,7 +358,7 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <h4 class="font-medium text-gray-900 group-hover:text-indigo-600">Laporan Posisi Keuangan</h4>
+                                            <h4 class="font-medium text-gray-900 group-hover:text-indigo-600">Neraca</h4>
                                             <p class="text-sm text-gray-600">Neraca/Balance sheet</p>
                                         </div>
                                     </div>
@@ -399,41 +372,7 @@
                 </div>
             </div>
 
-            <!-- CTA Section -->
-            <div class="rounded-2xl shadow-2xl text-white overflow-hidden relative" style="background: linear-gradient(135deg, #0F172A 0%, #334155 50%, #14B8A6 100%);">
-                <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.2) 0%, rgba(51, 65, 85, 0.2) 50%, rgba(20, 184, 166, 0.2) 100%);"></div>
-                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full" style="background: rgba(103, 232, 249, 0.1);"></div>
-                <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full" style="background: rgba(248, 250, 252, 0.05);"></div>
-                <div class="relative p-8">
-                    <div class="flex items-center justify-between">
-                        <div class="max-w-xl">
-                            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3">Mulai Kelola Keuangan Warung Anda!</h3>
-                            <p class="mb-6 text-sm sm:text-base md:text-lg leading-relaxed" style="color: #E2E8F0;">Sistem akuntansi digital yang mudah digunakan, lengkap dengan laporan keuangan yang professional untuk UMKM Anda.</p>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <a href="{{ route('accounts.index') }}" class="inline-flex items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 bg-white rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base" style="color: #14B8A6;">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                    Mulai Setup Akun
-                                </a>
-                                <a href="{{ route('reports.trial-balance') }}" class="inline-flex items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 border-2 rounded-xl font-semibold hover:bg-white/10 transition-all duration-200 backdrop-blur-sm text-sm sm:text-base" style="border-color: rgba(20, 184, 166, 0.3);">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    Lihat Laporan Demo
-                                </a>
-                            </div>
-                        </div>
-                        <div class="hidden lg:block">
-                            <div class="w-40 h-40 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-xl" style="background: rgba(103, 232, 249, 0.1);">
-                                <svg class="w-20 h-20" style="color: rgba(248, 250, 252, 0.6);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </x-admin-layout>

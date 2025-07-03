@@ -5,22 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OpeningBalance extends Model
+class JournalDetail extends Model
 {
     protected $fillable = [
         'umkm_id',
+        'journal_entry_id',
         'account_id',
-        'saldo_awal',
-        'tanggal',
+        'debit',
+        'kredit',
     ];
 
     protected $casts = [
-        'saldo_awal' => 'decimal:2',
-        'tanggal' => 'date',
+        'debit' => 'decimal:2',
+        'kredit' => 'decimal:2',
     ];
 
     /**
-     * Get the UMKM that owns the opening balance.
+     * Get the UMKM that owns the journal detail.
      */
     public function umkm(): BelongsTo
     {
@@ -28,7 +29,15 @@ class OpeningBalance extends Model
     }
 
     /**
-     * Get the account that owns the opening balance.
+     * Get the journal entry that owns the journal detail.
+     */
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
+    }
+
+    /**
+     * Get the account that owns the journal detail.
      */
     public function account(): BelongsTo
     {

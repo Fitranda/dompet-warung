@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\JournalEntryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\OpeningBalanceController;
 use App\Http\Controllers\ReportController;
@@ -25,7 +26,8 @@ Route::middleware('auth')->group(function () {
 
     // Accounting Routes
     Route::resource('accounts', AccountController::class);
-    Route::resource('transactions', TransactionController::class);
+    Route::resource('journal-entries', JournalEntryController::class);
+    // Route::resource('transactions', TransactionController::class); // Disabled - using journal_entries instead
     Route::resource('opening-balances', OpeningBalanceController::class);
 
     // Reports Routes

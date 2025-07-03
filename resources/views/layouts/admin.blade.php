@@ -96,7 +96,7 @@
                             </svg>
                         </button>
                         <div x-show="openDropdowns.transactions" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                            <a href="{{ route('transactions.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('transactions.*') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('transactions.*') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                            <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.*') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.*') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
                                 <svg class="mr-3 h-4 w-4 {{ request()->routeIs('transactions.*') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
@@ -124,18 +124,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                 </svg>
                                 Buku Besar
-                            </a>
-                            <a href="{{ route('reports.trial-balance') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.trial-balance') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.trial-balance') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
-                                <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.trial-balance') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                </svg>
-                                Neraca Saldo
-                            </a>
-                            <a href="{{ route('reports.worksheet') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.worksheet') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.worksheet') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
-                                <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.worksheet') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                                </svg>
-                                Neraca Lajur
                             </a>
                             <a href="{{ route('reports.income-statement') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.income-statement') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.income-statement') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
                                 <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.income-statement') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +234,7 @@
                                 </svg>
                             </button>
                             <div x-show="mobileDropdowns.transactions" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                                <a href="{{ route('transactions.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('transactions.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
+                                <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('journal-entries.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
                                     <svg class="mr-3 h-4 w-4 {{ request()->routeIs('transactions.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                     </svg>
@@ -348,9 +336,9 @@
                         </button>
 
                         <!-- Current Date -->
-                        <div class="hidden sm:block text-right">
-                            <p class="text-sm font-medium" style="color: #334155;">{{ now()->format('l, d F Y') }}</p>
-                            <p class="text-xs" style="color: #64748B;">{{ now()->format('H:i') }} WIB</p>
+                        <div class="hidden sm:block text-right" id="datetime-display">
+                            <p class="text-sm font-medium" style="color: #334155;" id="date-display">{{ now()->format('l, d F Y') }}</p>
+                            <p class="text-xs" style="color: #64748B;" id="time-display">{{ now()->format('H:i') }} WIB</p>
                         </div>
 
                         <!-- User Profile Dropdown -->
@@ -406,5 +394,48 @@
             </main>
         </div>
     </div>
+
+    <script>
+        // Function to update date and time
+        function updateDateTime() {
+            const now = new Date();
+
+            // Array untuk nama hari dalam bahasa Indonesia
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+            // Array untuk nama bulan dalam bahasa Indonesia
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            // Format tanggal: Senin, 03 Juli 2025
+            const dayName = days[now.getDay()];
+            const date = now.getDate().toString().padStart(2, '0');
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const dateString = `${dayName}, ${date} ${month} ${year}`;
+
+            // Format waktu: 14:30 WIB
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeString = `${hours}:${minutes} WIB`;
+
+            // Update elemen di DOM
+            const dateDisplay = document.getElementById('date-display');
+            const timeDisplay = document.getElementById('time-display');
+
+            if (dateDisplay) {
+                dateDisplay.textContent = dateString;
+            }
+            if (timeDisplay) {
+                timeDisplay.textContent = timeString;
+            }
+        }
+
+        // Update waktu setiap detik
+        setInterval(updateDateTime, 1000);
+
+        // Update waktu saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', updateDateTime);
+    </script>
 </body>
 </html>

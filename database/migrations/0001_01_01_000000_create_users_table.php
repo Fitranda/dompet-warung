@@ -13,12 +13,18 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('umkm_id')->constrained('umkm')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['owner', 'admin', 'staff'])->default('owner');
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
+
+            // Setiap UMKM hanya boleh memiliki satu user dengan role 'owner'
+            $table->unique(['umkm_id', 'role']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

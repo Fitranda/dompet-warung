@@ -9,62 +9,81 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Account extends Model
 {
     protected $fillable = [
-        'code',
-        'name',
-        'type',
-        'normal_balance',
-        'parent_id',
+        'umkm_id',
+        'kode_akun',
+        'nama_akun',
+        'tipe_akun',
+        'saldo_normal',
         'is_active',
-        'description'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
 
-    // Relationship dengan parent account
-    public function parent(): BelongsTo
+    /**
+     * Get the UMKM that owns the account.
+     */
+    public function umkm(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'parent_id');
+        return $this->belongsTo(Umkm::class);
     }
 
-    // Relationship dengan sub accounts
-    public function children(): HasMany
+    /**
+     * Get the journal details for the account.
+     */
+    public function journalDetails(): HasMany
     {
-        return $this->hasMany(Account::class, 'parent_id');
+        return $this->hasMany(JournalDetail::class);
     }
 
-    // Relationship dengan transaction details
-    public function transactionDetails(): HasMany
-    {
-        return $this->hasMany(TransactionDetail::class);
-    }
-
-    // Relationship dengan opening balances
+    /**
+     * Get the opening balances for the account.
+     */
     public function openingBalances(): HasMany
     {
         return $this->hasMany(OpeningBalance::class);
     }
 
-    // Method untuk menghitung saldo
+    /**
+     * Calculate account balance based on journal entries.
+     */
     public function getBalance($startDate = null, $endDate = null)
     {
-        $query = $this->transactionDetails()
-            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id');
+        $query = $this->journalDetails()
+            ->join('journal_entries', 'journal_details.journal_entry_id', '=', 'journal_entries.id');
 
         if ($startDate) {
-            $query->where('transactions.transaction_date', '>=', $startDate);
+            $query->where('journal_entries.tanggal', '>=', $startDate);
         }
 
         if ($endDate) {
-            $query->where('transactions.transaction_date', '<=', $endDate);
+            $query->where('journal_entries.tanggal', '<=', $endDate);
         }
 
-        $totalDebit = $query->sum('transaction_details.debit_amount');
-        $totalCredit = $query->sum('transaction_details.credit_amount');
+        $totalDebit = $query->sum('journal_details.debit');
+        $totalKredit = $query->sum('journal_details.kredit');
 
-        return $this->normal_balance === 'debit'
-            ? $totalDebit - $totalCredit
-            : $totalCredit - $totalDebit;
+        // Get opening balance
+        $openingBalance = $this->openingBalances()
+            ->where('umkm_id', $this->umkm_id)
+            ->first();
+
+        $openingAmount = $openingBalance ? $openingBalance->saldo_awal : 0;
+
+        // Calculate balance based on account type
+        if ($this->saldo_normal === 'debit') {
+            return $openingAmount + $totalDebit - $totalKredit;
+        } else {
+            return $openingAmount + $totalKredit - $totalDebit;
+        }
+    }
+
+    /**
+     * Get formatted account code and name.
+     */
+    public function getFormattedNameAttribute()
+    {
+        return $this->kode_akun . ' - ' . $this->nama_akun;
     }
 }

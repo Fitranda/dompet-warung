@@ -23,7 +23,7 @@
                     <x-nav-link :href="route('accounts.index')" :active="request()->routeIs('accounts.*')" class="mobile-nav-link">
                         {{ __('Kode Akun') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')" class="mobile-nav-link">
+                    <x-nav-link :href="route('journal-entries.index')" :active="request()->routeIs('journal-entries.*')" class="mobile-nav-link">
                         {{ __('Jurnal Umum') }}
                     </x-nav-link>
                     <x-nav-link :href="route('opening-balances.index')" :active="request()->routeIs('opening-balances.*')" class="mobile-nav-link">
@@ -46,12 +46,6 @@
                         <x-slot name="content">
                             <x-dropdown-link :href="route('reports.general-ledger')">
                                 {{ __('Buku Besar') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('reports.trial-balance')">
-                                {{ __('Neraca Saldo') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('reports.worksheet')">
-                                {{ __('Neraca Lajur') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('reports.income-statement')">
                                 {{ __('Laba Rugi') }}
@@ -134,7 +128,7 @@
             <x-responsive-nav-link :href="route('accounts.index')" :active="request()->routeIs('accounts.*')">
                 {{ __('Kode Akun') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+            <x-responsive-nav-link :href="route('journal-entries.index')" :active="request()->routeIs('journal-entries.*')">
                 {{ __('Jurnal Umum') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('opening-balances.index')" :active="request()->routeIs('opening-balances.*')">
