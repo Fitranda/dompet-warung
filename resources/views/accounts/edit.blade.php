@@ -1,14 +1,14 @@
 <x-admin-layout>
-    <x-slot name="title">Tambah Akun</x-slot>
+    <x-slot name="title">Edit Akun</x-slot>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div class="min-w-0 flex-1">
-                <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate" style="color: #0F172A;">➕ Tambah Akun</h1>
+                <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate" style="color: #0F172A;">✏️ Edit Akun</h1>
                 <p class="mt-1 flex items-center text-xs sm:text-sm" style="color: #334155;">
                     <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-2 flex-shrink-0" style="color: #14B8A6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
-                    <span class="truncate">Buat akun baru untuk chart of accounts</span>
+                    <span class="truncate">Ubah data akun: <strong>{{ $account->nama_akun }}</strong></span>
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
@@ -62,6 +62,25 @@
             </div>
         @endif
 
+        <!-- Info Usage (if any) -->
+        @if(method_exists($account, 'journalDetails') && $account->journalDetails()->exists())
+            <div class="mb-4 sm:mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.268 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-2 sm:ml-3">
+                        <div class="text-xs sm:text-sm font-medium text-yellow-800">
+                            <p class="font-semibold">Perhatian:</p>
+                            <p>Akun ini sudah digunakan dalam {{ $account->journalDetails()->count() }} transaksi jurnal. Perubahan pada akun ini dapat mempengaruhi laporan keuangan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Main Form Card -->
         <div class="bg-white rounded-xl shadow-lg border overflow-hidden" style="border-color: #E2E8F0;">
             <!-- Card Header -->
@@ -69,17 +88,18 @@
                 <div class="flex items-center">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold" style="color: #0F172A;">Form Akun Baru</h3>
+                    <h3 class="text-lg font-semibold" style="color: #0F172A;">Form Edit Akun</h3>
                 </div>
             </div>
 
             <!-- Card Body -->
             <div class="p-4 sm:p-6">
-                <form action="{{ route('accounts.store') }}" method="POST" id="accountForm" class="space-y-6">
+                <form action="{{ route('accounts.update', $account) }}" method="POST" id="accountForm" class="space-y-6">
                     @csrf
+                    @method('PUT')
 
                     <!-- Grid Layout -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -92,7 +112,7 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200 @error('kode_akun') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                    id="kode_akun"
                                    name="kode_akun"
-                                   value="{{ old('kode_akun') }}"
+                                   value="{{ old('kode_akun', $account->kode_akun) }}"
                                    placeholder="Contoh: 1-101"
                                    required>
                             @error('kode_akun')
@@ -110,7 +130,7 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200 @error('nama_akun') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                    id="nama_akun"
                                    name="nama_akun"
-                                   value="{{ old('nama_akun') }}"
+                                   value="{{ old('nama_akun', $account->nama_akun) }}"
                                    placeholder="Contoh: Kas"
                                    required>
                             @error('nama_akun')
@@ -128,11 +148,11 @@
                                     name="tipe_akun"
                                     required>
                                 <option value="">Pilih Tipe Akun</option>
-                                <option value="aset" {{ old('tipe_akun') == 'aset' ? 'selected' : '' }}>💰 Aset</option>
-                                <option value="liabilitas" {{ old('tipe_akun') == 'liabilitas' ? 'selected' : '' }}>💳 Liabilitas</option>
-                                <option value="ekuitas" {{ old('tipe_akun') == 'ekuitas' ? 'selected' : '' }}>📊 Ekuitas</option>
-                                <option value="pendapatan" {{ old('tipe_akun') == 'pendapatan' ? 'selected' : '' }}>📈 Pendapatan</option>
-                                <option value="beban" {{ old('tipe_akun') == 'beban' ? 'selected' : '' }}>📉 Beban</option>
+                                <option value="aset" {{ old('tipe_akun', $account->tipe_akun) == 'aset' ? 'selected' : '' }}>💰 Aset</option>
+                                <option value="liabilitas" {{ old('tipe_akun', $account->tipe_akun) == 'liabilitas' ? 'selected' : '' }}>💳 Liabilitas</option>
+                                <option value="ekuitas" {{ old('tipe_akun', $account->tipe_akun) == 'ekuitas' ? 'selected' : '' }}>📊 Ekuitas</option>
+                                <option value="pendapatan" {{ old('tipe_akun', $account->tipe_akun) == 'pendapatan' ? 'selected' : '' }}>📈 Pendapatan</option>
+                                <option value="beban" {{ old('tipe_akun', $account->tipe_akun) == 'beban' ? 'selected' : '' }}>📉 Beban</option>
                             </select>
                             @error('tipe_akun')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -148,10 +168,10 @@
                                     id="kategori"
                                     name="kategori">
                                 <option value="">Pilih Kategori (Opsional)</option>
-                                <option value="lancar" {{ old('kategori') == 'lancar' ? 'selected' : '' }}>Lancar</option>
-                                <option value="tidak_lancar" {{ old('kategori') == 'tidak_lancar' ? 'selected' : '' }}>Tidak Lancar</option>
-                                <option value="operasional" {{ old('kategori') == 'operasional' ? 'selected' : '' }}>Operasional</option>
-                                <option value="non_operasional" {{ old('kategori') == 'non_operasional' ? 'selected' : '' }}>Non Operasional</option>
+                                <option value="lancar" {{ old('kategori', $account->kategori) == 'lancar' ? 'selected' : '' }}>Lancar</option>
+                                <option value="tidak_lancar" {{ old('kategori', $account->kategori) == 'tidak_lancar' ? 'selected' : '' }}>Tidak Lancar</option>
+                                <option value="operasional" {{ old('kategori', $account->kategori) == 'operasional' ? 'selected' : '' }}>Operasional</option>
+                                <option value="non_operasional" {{ old('kategori', $account->kategori) == 'non_operasional' ? 'selected' : '' }}>Non Operasional</option>
                             </select>
                             @error('kategori')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -167,7 +187,7 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200 @error('parent_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                    id="parent_id"
                                    name="parent_id"
-                                   value="{{ old('parent_id') }}"
+                                   value="{{ old('parent_id', $account->parent_id) }}"
                                    placeholder="Kode akun induk (opsional)">
                             @error('parent_id')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -183,8 +203,8 @@
                             <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200 @error('is_active') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                     id="is_active"
                                     name="is_active">
-                                <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>✅ Aktif</option>
-                                <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>❌ Tidak Aktif</option>
+                                <option value="1" {{ old('is_active', $account->is_active) == '1' ? 'selected' : '' }}>✅ Aktif</option>
+                                <option value="0" {{ old('is_active', $account->is_active) == '0' ? 'selected' : '' }}>❌ Tidak Aktif</option>
                             </select>
                             @error('is_active')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -201,7 +221,7 @@
                                   id="deskripsi"
                                   name="deskripsi"
                                   rows="3"
-                                  placeholder="Deskripsi lengkap tentang akun ini (opsional)">{{ old('deskripsi') }}</textarea>
+                                  placeholder="Deskripsi lengkap tentang akun ini (opsional)">{{ old('deskripsi', $account->deskripsi) }}</textarea>
                         @error('deskripsi')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -223,9 +243,9 @@
                                     style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);"
                                     id="submitBtn">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                                 </svg>
-                                Simpan Akun
+                                Update Akun
                             </button>
                         </div>
                     </div>
@@ -253,7 +273,7 @@
                 <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
-                Menyimpan...
+                Memperbarui...
             `;
             submitBtn.disabled = true;
         });
@@ -302,4 +322,3 @@
     </script>
     @endpush
 </x-admin-layout>
-

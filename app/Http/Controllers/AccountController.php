@@ -11,13 +11,56 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $accounts = Account::where('umkm_id', Auth::user()->umkm_id)
-            ->orderBy('kode_akun')
-            ->paginate(10);
+        $query = Account::where('umkm_id', Auth::user()->umkm_id);
 
-        return view('accounts.index', compact('accounts'));
+        // Filter pencarian umum
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('kode_akun', 'like', "%{$search}%")
+                  ->orWhere('nama_akun', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter kode akun
+        if ($request->filled('kode_akun')) {
+            $query->where('kode_akun', 'like', '%' . $request->get('kode_akun') . '%');
+        }
+
+        // Filter nama akun
+        if ($request->filled('nama_akun')) {
+            $query->where('nama_akun', 'like', '%' . $request->get('nama_akun') . '%');
+        }
+
+        // Filter tipe akun
+        if ($request->filled('tipe_akun')) {
+            $query->where('tipe_akun', $request->get('tipe_akun'));
+        }
+
+        // Filter kategori
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->get('kategori'));
+        }
+
+        // Filter status aktif
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->get('is_active'));
+        }
+
+        $accounts = $query->orderBy('kode_akun')->paginate(15);
+
+        // Hitung jumlah filter aktif
+        $activeFilters = collect($request->all())
+            ->except(['page'])
+            ->filter(function($value) {
+                return !empty($value);
+            })
+            ->count();
+
+        return view('accounts.index', compact('accounts', 'activeFilters'));
     }
 
     /**
@@ -156,5 +199,84 @@ class AccountController extends Controller
 
         return redirect()->route('accounts.index')
             ->with('success', 'Akun berhasil dihapus');
+    }
+
+    /**
+     * Export accounts to Excel
+     */
+    public function export(Request $request)
+    {
+        $query = Account::where('umkm_id', Auth::user()->umkm_id);
+
+        // Apply same filters as index
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('kode_akun', 'like', "%{$search}%")
+                  ->orWhere('nama_akun', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('kode_akun')) {
+            $query->where('kode_akun', 'like', '%' . $request->get('kode_akun') . '%');
+        }
+
+        if ($request->filled('nama_akun')) {
+            $query->where('nama_akun', 'like', '%' . $request->get('nama_akun') . '%');
+        }
+
+        if ($request->filled('tipe_akun')) {
+            $query->where('tipe_akun', $request->get('tipe_akun'));
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->get('kategori'));
+        }
+
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->get('is_active'));
+        }
+
+        $accounts = $query->orderBy('kode_akun')->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="daftar-akun-' . date('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function() use ($accounts) {
+            $file = fopen('php://output', 'w');
+
+            // Header CSV
+            fputcsv($file, [
+                'Kode Akun',
+                'Nama Akun',
+                'Tipe Akun',
+                'Kategori',
+                'Parent ID',
+                'Status',
+                'Deskripsi',
+                'Dibuat Pada'
+            ]);
+
+            // Data
+            foreach ($accounts as $account) {
+                fputcsv($file, [
+                    $account->kode_akun,
+                    $account->nama_akun,
+                    ucfirst($account->tipe_akun),
+                    $account->kategori ? ucfirst(str_replace('_', ' ', $account->kategori)) : '',
+                    $account->parent_id ?? '',
+                    $account->is_active ? 'Aktif' : 'Tidak Aktif',
+                    $account->deskripsi ?? '',
+                    $account->created_at->format('d/m/Y H:i'),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

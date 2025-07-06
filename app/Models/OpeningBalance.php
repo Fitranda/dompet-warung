@@ -11,12 +11,12 @@ class OpeningBalance extends Model
         'umkm_id',
         'account_id',
         'saldo_awal',
-        'tanggal',
+        'bulan',
     ];
 
     protected $casts = [
         'saldo_awal' => 'decimal:2',
-        'tanggal' => 'date',
+        'bulan' => 'date',
     ];
 
     /**

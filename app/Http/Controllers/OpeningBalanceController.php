@@ -42,7 +42,7 @@ class OpeningBalanceController extends Controller
         $request->validate([
             'account_id' => 'required|exists:accounts,id',
             'saldo_awal' => 'required|numeric',
-            'tanggal' => 'required|date',
+            'bulan' => 'required|date',
         ]);
 
         // Check if opening balance already exists for this account
@@ -58,7 +58,7 @@ class OpeningBalanceController extends Controller
             'umkm_id' => Auth::user()->umkm_id,
             'account_id' => $request->account_id,
             'saldo_awal' => $request->saldo_awal,
-            'tanggal' => $request->tanggal,
+            'bulan' => $request->bulan,
         ]);
 
         return redirect()->route('opening-balances.index')
@@ -108,7 +108,7 @@ class OpeningBalanceController extends Controller
         $request->validate([
             'account_id' => 'required|exists:accounts,id',
             'saldo_awal' => 'required|numeric',
-            'tanggal' => 'required|date',
+            'bulan' => 'required|date',
         ]);
 
         // Check if opening balance already exists for this account (except current one)
@@ -124,7 +124,7 @@ class OpeningBalanceController extends Controller
         $openingBalance->update([
             'account_id' => $request->account_id,
             'saldo_awal' => $request->saldo_awal,
-            'tanggal' => $request->tanggal,
+            'bulan' => $request->bulan,
         ]);
 
         return redirect()->route('opening-balances.index')
@@ -145,5 +145,88 @@ class OpeningBalanceController extends Controller
 
         return redirect()->route('opening-balances.index')
             ->with('success', 'Saldo awal berhasil dihapus');
+    }
+
+    /**
+     * Show the form for bulk creating opening balances.
+     */
+    public function bulkCreate()
+    {
+        $accounts = Account::where('umkm_id', Auth::user()->umkm_id)
+            ->orderBy('kode_akun')
+            ->get();
+
+        return view('opening-balances.bulk-create', compact('accounts'));
+    }
+
+    /**
+     * Store multiple opening balances at once.
+     */
+    public function bulkStore(Request $request)
+    {
+        $request->validate([
+            'bulan' => 'required|date',
+            'opening_balances' => 'required|array|min:1',
+            'opening_balances.*.account_id' => 'required|exists:accounts,id',
+            'opening_balances.*.saldo_awal' => 'required|numeric',
+        ]);
+
+        $successCount = 0;
+        $errorCount = 0;
+        $errors = [];
+
+        foreach ($request->opening_balances as $index => $balanceData) {
+            // Skip empty saldo_awal
+            if (empty($balanceData['saldo_awal']) || $balanceData['saldo_awal'] == 0) {
+                continue;
+            }
+
+            try {
+                // Check if opening balance already exists for this account
+                $existingBalance = OpeningBalance::where('umkm_id', Auth::user()->umkm_id)
+                    ->where('account_id', $balanceData['account_id'])
+                    ->first();
+
+                if ($existingBalance) {
+                    // Update existing balance
+                    $existingBalance->update([
+                        'saldo_awal' => $balanceData['saldo_awal'],
+                        'bulan' => $request->bulan,
+                    ]);
+                    $successCount++;
+                } else {
+                    // Create new balance
+                    OpeningBalance::create([
+                        'umkm_id' => Auth::user()->umkm_id,
+                        'account_id' => $balanceData['account_id'],
+                        'saldo_awal' => $balanceData['saldo_awal'],
+                        'bulan' => $request->bulan,
+                    ]);
+                    $successCount++;
+                }
+            } catch (\Exception $e) {
+                $errorCount++;
+                $account = Account::find($balanceData['account_id']);
+                $errors[] = "Error pada akun {$account->nama_akun}: " . $e->getMessage();
+            }
+        }
+
+        if ($successCount > 0) {
+            $message = "Berhasil menyimpan {$successCount} saldo awal";
+            if ($errorCount > 0) {
+                $message .= " dengan {$errorCount} error";
+            }
+
+            if (!empty($errors)) {
+                return redirect()->route('opening-balances.index')
+                    ->with('success', $message)
+                    ->with('errors', $errors);
+            }
+
+            return redirect()->route('opening-balances.index')
+                ->with('success', $message);
+        } else {
+            return back()->withErrors(['opening_balances' => 'Tidak ada data yang valid untuk disimpan'])->withInput();
+        }
     }
 }

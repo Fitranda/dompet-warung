@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     // Accounting Routes
     Route::resource('accounts', AccountController::class);
+    Route::get('accounts-export', [AccountController::class, 'export'])->name('accounts.export');
     Route::resource('journal-entries', JournalEntryController::class);
 
     // Journal Entry Quick Templates
@@ -38,6 +39,10 @@ Route::middleware('auth')->group(function () {
 
     // Route::resource('transactions', TransactionController::class); // Disabled - using journal_entries instead
     Route::resource('opening-balances', OpeningBalanceController::class);
+
+    // Opening Balance Bulk Operations
+    Route::get('/opening-balances-bulk-create', [OpeningBalanceController::class, 'bulkCreate'])->name('opening-balances.bulk-create');
+    Route::post('/opening-balances-bulk-store', [OpeningBalanceController::class, 'bulkStore'])->name('opening-balances.bulk-store');
 
     // Reports Routes
     Route::prefix('reports')->name('reports.')->group(function () {
