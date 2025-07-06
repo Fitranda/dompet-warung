@@ -41,8 +41,8 @@
                         <select id="tipe_akun" name="tipe_akun" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
                             <option value="">Pilih Tipe Akun</option>
                             <option value="aset" {{ old('tipe_akun') == 'aset' ? 'selected' : '' }}>Aset</option>
-                            <option value="kewajiban" {{ old('tipe_akun') == 'kewajiban' ? 'selected' : '' }}>Kewajiban</option>
-                            <option value="modal" {{ old('tipe_akun') == 'modal' ? 'selected' : '' }}>Modal</option>
+                            <option value="liabilitas" {{ old('tipe_akun') == 'liabilitas' ? 'selected' : '' }}>Liabilitas</option>
+                            <option value="ekuitas" {{ old('tipe_akun') == 'ekuitas' ? 'selected' : '' }}>Ekuitas</option>
                             <option value="pendapatan" {{ old('tipe_akun') == 'pendapatan' ? 'selected' : '' }}>Pendapatan</option>
                             <option value="beban" {{ old('tipe_akun') == 'beban' ? 'selected' : '' }}>Beban</option>
                         </select>
@@ -52,13 +52,31 @@
                     </div>
 
                     <div>
-                        <label for="saldo_normal" class="block text-sm font-medium text-gray-700">Saldo Normal</label>
-                        <select id="saldo_normal" name="saldo_normal" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
-                            <option value="">Pilih Saldo Normal</option>
-                            <option value="debit" {{ old('saldo_normal') == 'debit' ? 'selected' : '' }}>Debit</option>
-                            <option value="kredit" {{ old('saldo_normal') == 'kredit' ? 'selected' : '' }}>Kredit</option>
+                        <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+                        <select id="kategori" name="kategori" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Pilih Kategori (Opsional)</option>
+                            <option value="lancar" {{ old('kategori') == 'lancar' ? 'selected' : '' }}>Lancar</option>
+                            <option value="tidak_lancar" {{ old('kategori') == 'tidak_lancar' ? 'selected' : '' }}>Tidak Lancar</option>
+                            <option value="operasional" {{ old('kategori') == 'operasional' ? 'selected' : '' }}>Operasional</option>
+                            <option value="non_operasional" {{ old('kategori') == 'non_operasional' ? 'selected' : '' }}>Non Operasional</option>
                         </select>
-                        @error('saldo_normal')
+                        @error('kategori')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="parent_id" class="block text-sm font-medium text-gray-700">Parent Account (Opsional)</label>
+                        <input type="text" id="parent_id" name="parent_id" value="{{ old('parent_id') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        @error('parent_id')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="deskripsi" name="deskripsi" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('deskripsi') }}</textarea>
+                        @error('deskripsi')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

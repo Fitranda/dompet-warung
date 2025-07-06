@@ -36,9 +36,11 @@ class AccountController extends Controller
         $request->validate([
             'kode_akun' => 'required|string|max:10',
             'nama_akun' => 'required|string|max:255',
-            'tipe_akun' => 'required|in:aset,kewajiban,modal,pendapatan,beban',
-            'saldo_normal' => 'required|in:debit,kredit',
+            'tipe_akun' => 'required|in:aset,liabilitas,ekuitas,pendapatan,beban',
+            'kategori' => 'nullable|in:lancar,tidak_lancar,operasional,non_operasional',
+            'parent_id' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'deskripsi' => 'nullable|string',
         ]);
 
         // Check if account code already exists for this UMKM
@@ -55,8 +57,10 @@ class AccountController extends Controller
             'kode_akun' => $request->kode_akun,
             'nama_akun' => $request->nama_akun,
             'tipe_akun' => $request->tipe_akun,
-            'saldo_normal' => $request->saldo_normal,
+            'kategori' => $request->kategori,
+            'parent_id' => $request->parent_id,
             'is_active' => $request->is_active ?? true,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('accounts.index')
@@ -102,9 +106,11 @@ class AccountController extends Controller
         $request->validate([
             'kode_akun' => 'required|string|max:10',
             'nama_akun' => 'required|string|max:255',
-            'tipe_akun' => 'required|in:aset,kewajiban,modal,pendapatan,beban',
-            'saldo_normal' => 'required|in:debit,kredit',
+            'tipe_akun' => 'required|in:aset,liabilitas,ekuitas,pendapatan,beban',
+            'kategori' => 'nullable|in:lancar,tidak_lancar,operasional,non_operasional',
+            'parent_id' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'deskripsi' => 'nullable|string',
         ]);
 
         // Check if account code already exists for this UMKM (except current account)
@@ -121,8 +127,10 @@ class AccountController extends Controller
             'kode_akun' => $request->kode_akun,
             'nama_akun' => $request->nama_akun,
             'tipe_akun' => $request->tipe_akun,
-            'saldo_normal' => $request->saldo_normal,
+            'kategori' => $request->kategori,
+            'parent_id' => $request->parent_id,
             'is_active' => $request->is_active ?? true,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect()->route('accounts.index')

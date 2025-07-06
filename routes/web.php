@@ -16,6 +16,10 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/home', function () {
+    return view('welcome');
+})->name('home');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -27,6 +31,11 @@ Route::middleware('auth')->group(function () {
     // Accounting Routes
     Route::resource('accounts', AccountController::class);
     Route::resource('journal-entries', JournalEntryController::class);
+
+    // Journal Entry Quick Templates
+    Route::get('/journal-entries-quick-templates', [JournalEntryController::class, 'quickTemplates'])->name('journal-entries.quick-templates');
+    Route::get('/journal-entries-create-from-template', [JournalEntryController::class, 'createFromTemplate'])->name('journal-entries.create-from-template');
+
     // Route::resource('transactions', TransactionController::class); // Disabled - using journal_entries instead
     Route::resource('opening-balances', OpeningBalanceController::class);
 

@@ -293,6 +293,36 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </a>
+
+                            <a href="{{ route('journal-entries.quick-templates') }}" class="flex items-center p-3 md:p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl hover:from-orange-100 hover:to-orange-200 hover:shadow-md transition-all duration-200 group border border-orange-200">
+                                <div class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 group-hover:from-orange-600 group-hover:to-orange-700 transition-all duration-200 shadow-lg">
+                                    <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors text-sm md:text-base">Jurnal Singkat</h4>
+                                    <p class="text-xs md:text-sm text-gray-600 truncate">Buat jurnal dengan template siap pakai</p>
+                                </div>
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-orange-600 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+
+                            <a href="{{ route('journal-entries.index') }}" class="flex items-center p-3 md:p-4 bg-gradient-to-r from-teal-50 to-teal-100 rounded-xl hover:from-teal-100 hover:to-teal-200 hover:shadow-md transition-all duration-200 group border border-teal-200">
+                                <div class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 group-hover:from-teal-600 group-hover:to-teal-700 transition-all duration-200 shadow-lg">
+                                    <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="font-semibold text-gray-900 group-hover:text-teal-600 transition-colors text-sm md:text-base">Jurnal Umum</h4>
+                                    <p class="text-xs md:text-sm text-gray-600 truncate">Lihat dan kelola semua jurnal umum</p>
+                                </div>
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-teal-600 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>

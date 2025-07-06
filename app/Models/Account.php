@@ -13,8 +13,10 @@ class Account extends Model
         'kode_akun',
         'nama_akun',
         'tipe_akun',
-        'saldo_normal',
+        'kategori',
+        'parent_id',
         'is_active',
+        'deskripsi',
     ];
 
     protected $casts = [
@@ -71,12 +73,22 @@ class Account extends Model
 
         $openingAmount = $openingBalance ? $openingBalance->saldo_awal : 0;
 
-        // Calculate balance based on account type
-        if ($this->saldo_normal === 'debit') {
+        // Calculate balance based on account type (saldo normal)
+        // Aset dan Beban memiliki saldo normal debit
+        // Liabilitas, Ekuitas, dan Pendapatan memiliki saldo normal kredit
+        if (in_array($this->tipe_akun, ['aset', 'beban'])) {
             return $openingAmount + $totalDebit - $totalKredit;
         } else {
             return $openingAmount + $totalKredit - $totalDebit;
         }
+    }
+
+    /**
+     * Get saldo normal based on account type.
+     */
+    public function getSaldoNormalAttribute()
+    {
+        return in_array($this->tipe_akun, ['aset', 'beban']) ? 'debit' : 'kredit';
     }
 
     /**

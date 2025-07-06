@@ -96,8 +96,14 @@
                             </svg>
                         </button>
                         <div x-show="openDropdowns.transactions" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                            <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.*') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.*') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
-                                <svg class="mr-3 h-4 w-4 {{ request()->routeIs('transactions.*') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('journal-entries.quick-templates') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.quick-templates') ? 'style=background:linear-gradient(135deg,#3B82F6_0%,#1E40AF_100%);' : '' }}>
+                                <svg class="mr-3 h-4 w-4 {{ request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Jurnal Singkat
+                            </a>
+                            <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                <svg class="mr-3 h-4 w-4 {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Jurnal Umum

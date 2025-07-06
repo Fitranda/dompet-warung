@@ -12,15 +12,17 @@ class JournalEntry extends Model
         'umkm_id',
         'no_jurnal',
         'tanggal',
+        'referensi',
         'keterangan',
-        'total_debit',
+        'total_debet',
         'total_kredit',
+        'status',
         'created_by',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
-        'total_debit' => 'decimal:2',
+        'total_debet' => 'decimal:2',
         'total_kredit' => 'decimal:2',
     ];
 
