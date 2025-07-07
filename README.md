@@ -15,11 +15,13 @@ Sistem akuntansi digital yang mudah digunakan, dirancang khusus untuk UMKM (Usah
 - **Saldo Awal** - Setup saldo pembukaan untuk setiap akun
 - **Neraca Saldo** - Ringkasan saldo per periode secara real-time
 
-### 📈 Laporan Keuangan
-- **Buku Besar** - Detail transaksi per akun
-- **Neraca Lajur** - Worksheet untuk penyusunan laporan
-- **Laporan Laba Rugi** - Income statement dengan analisis profitabilitas
-- **Laporan Posisi Keuangan** - Balance sheet yang akurat
+### 📈 Laporan Keuangan Profesional
+- **Buku Besar (General Ledger)** - Detail transaksi per akun dengan running balance
+- **Laporan Laba Rugi (Income Statement)** - Analisis profitabilitas dengan detail transaksi
+- **Neraca (Balance Sheet)** - Posisi keuangan dengan pengecekan keseimbangan otomatis
+- **Filter Canggih** - Filter berdasarkan periode, akun, dan tipe akun
+- **Export Multi-Format** - PDF professional dan Excel (XLSX) dengan styling
+- **Real-time Calculation** - Perhitungan otomatis saldo dan retained earnings
 
 ### 🎨 User Experience
 - **Responsive Design** - Optimal di semua device (mobile, tablet, desktop)
@@ -43,6 +45,8 @@ Menggunakan color palette modern yang konsisten:
 - **MySQL** - Database relational untuk data persistence
 - **Laravel Sanctum** - API authentication
 - **Laravel Breeze** - Authentication scaffolding
+- **mPDF** - Professional PDF generation untuk laporan
+- **PhpSpreadsheet** - Excel export dengan formula dan styling
 
 ### Frontend
 - **Blade Templates** - Server-side rendering
@@ -75,6 +79,10 @@ cd dompet-warung
 ```bash
 # Install PHP dependencies
 composer install
+
+# Install PDF and Excel export dependencies
+composer require mpdf/mpdf
+composer require phpoffice/phpspreadsheet
 
 # Install Node.js dependencies
 npm install
@@ -212,6 +220,25 @@ php artisan test --testsuite=Unit
 
 # Run dengan coverage
 php artisan test --coverage
+
+# Test specific laporan
+php artisan test tests/Feature/ReportTest.php
+```
+
+### Testing Laporan Keuangan
+
+```php
+// Test Buku Besar
+php artisan test --filter=test_general_ledger_shows_correct_data
+
+// Test Export PDF
+php artisan test --filter=test_export_pdf_generates_valid_file
+
+// Test Export Excel  
+php artisan test --filter=test_export_excel_creates_spreadsheet
+
+// Test Filter Validation
+php artisan test --filter=test_filter_validation_works
 ```
 
 ## 📝 API Documentation
@@ -248,6 +275,14 @@ GET    /api/reports/trial-balance
 GET    /api/reports/income-statement
 GET    /api/reports/balance-sheet
 GET    /api/reports/general-ledger
+
+# Export endpoints
+GET    /reports/general-ledger/pdf
+GET    /reports/general-ledger/excel
+GET    /reports/income-statement/pdf  
+GET    /reports/income-statement/excel
+GET    /reports/balance-sheet/pdf
+GET    /reports/balance-sheet/excel
 ```
 
 ## 🔒 Security Features
@@ -355,3 +390,409 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE) - lihat file LICENSE unt
 [Demo](https://demo.dompetwarung.com) • [Documentation](https://docs.dompetwarung.com) • [Support](mailto:support@dompetwarung.com)
 
 </div>
+
+## 📊 Fitur Laporan Keuangan
+
+Sistem ini menyediakan tiga laporan keuangan utama yang lengkap dengan fitur filter canggih dan export multi-format:
+
+### 📋 Buku Besar (General Ledger)
+
+Menampilkan detail transaksi untuk setiap akun dengan running balance yang akurat.
+
+**Fitur Utama:**
+- **Running Balance**: Saldo berjalan untuk setiap transaksi
+- **Filter Multi-Kriteria**: Periode, akun spesifik, dan tipe akun
+- **Summary Information**: Total debit, kredit, dan saldo akhir
+- **Export PDF & Excel**: Format professional dengan styling konsisten
+
+**Cara Menggunakan Filter:**
+```
+1. Pilih tanggal mulai dan akhir periode
+2. Filter berdasarkan akun tertentu (opsional):
+   - Ketik nama akun untuk pencarian real-time
+   - Pilih dari dropdown yang tersedia
+3. Filter berdasarkan tipe akun (opsional):
+   - Asset, Liability, Equity, Revenue, Expense
+4. Klik "Filter" untuk menerapkan atau "Reset" untuk mengosongkan
+```
+
+**Export Options:**
+- **PDF**: Format landscape dengan header perusahaan dan metadata
+- **Excel (XLSX)**: Spreadsheet dengan formula dan formatting profesional
+- **Print**: Optimized untuk printer dengan page break yang tepat
+
+### 💰 Laporan Laba Rugi (Income Statement)
+
+Analisis profitabilitas dengan perhitungan laba/rugi bersih yang akurat.
+
+**Komponen Laporan:**
+- **Pendapatan (Revenue)**: Semua akun tipe Revenue
+- **Beban (Expenses)**: Semua akun tipe Expense  
+- **Laba/Rugi Bersih**: Selisih antara pendapatan dan beban
+
+**Filter Tersedia:**
+```
+1. Periode Laporan:
+   - Tanggal mulai dan tanggal akhir
+   - Preset: Bulan ini, Tahun ini, Custom range
+2. Include Detail:
+   - ☑️ Tampilkan detail transaksi per akun
+   - ☐ Hanya tampilkan summary per akun
+```
+
+**Detail Transaksi (jika diaktifkan):**
+- Tanggal transaksi
+- Nomor jurnal dan deskripsi
+- Jumlah debit/kredit per transaksi
+- Total per akun
+
+**Export Features:**
+- **PDF**: Portrait format dengan breakdown detail
+- **Excel**: Multi-sheet dengan data mentah dan summary
+- **Print**: Responsive layout untuk berbagai ukuran kertas
+
+### ⚖️ Neraca (Balance Sheet)
+
+Laporan posisi keuangan dengan pengecekan keseimbangan otomatis.
+
+**Struktur Neraca:**
+```
+ASET (ASSETS)
+├── Aset Lancar (Current Assets)
+├── Aset Tetap (Non-Current Assets)
+└── Total Aset
+
+KEWAJIBAN & EKUITAS (LIABILITIES & EQUITY)
+├── Kewajiban (Liabilities)
+├── Ekuitas (Equity)
+│   ├── Modal (Equity Accounts)
+│   └── Laba Ditahan (Retained Earnings) - Otomatis
+└── Total Kewajiban & Ekuitas
+```
+
+**Fitur Khusus:**
+- **Auto Balance Check**: Sistem otomatis mengecek keseimbangan neraca
+- **Retained Earnings**: Dihitung otomatis dari akumulasi laba/rugi
+- **Multi-Level Grouping**: Pengelompokan berdasarkan tipe dan subtipe akun
+
+**Filter Options:**
+```
+1. Tanggal Neraca:
+   - Per tanggal tertentu (balance as of date)
+   - Default: Tanggal hari ini
+2. Include Detail:
+   - ☑️ Tampilkan detail transaksi per akun
+   - ☐ Hanya tampilkan saldo akhir per akun
+```
+
+**Validation Features:**
+- **Balance Check**: Alert jika total aset ≠ total kewajiban + ekuitas
+- **Missing Accounts**: Peringatan jika ada tipe akun yang belum ada
+- **Zero Balance**: Option untuk menyembunyikan akun dengan saldo nol
+
+### 🔧 Cara Menggunakan Filter
+
+#### 1. Filter Periode
+```html
+<!-- Contoh filter tanggal -->
+<input type="date" name="start_date" value="2024-01-01">
+<input type="date" name="end_date" value="2024-12-31">
+```
+
+#### 2. Filter Akun
+```html
+<!-- Search dengan autocomplete -->
+<input type="text" placeholder="Cari akun..." class="search-account">
+<!-- atau dropdown -->
+<select name="account_id">
+  <option value="">Semua Akun</option>
+  <option value="1">1-1000 Kas</option>
+  <option value="2">1-1100 Bank</option>
+</select>
+```
+
+#### 3. Filter Tipe Akun
+```html
+<select name="account_type">
+  <option value="">Semua Tipe</option>
+  <option value="asset">Aset</option>
+  <option value="liability">Kewajiban</option>
+  <option value="equity">Ekuitas</option>
+  <option value="revenue">Pendapatan</option>
+  <option value="expense">Beban</option>
+</select>
+```
+
+### 📁 Export & Download
+
+#### Export PDF
+```php
+// Generate PDF dengan mPDF
+Route::get('/reports/{type}/pdf', [ReportController::class, 'exportPdf'])
+    ->name('reports.export.pdf');
+
+// Contoh URL:
+// /reports/general-ledger/pdf?start_date=2024-01-01&end_date=2024-12-31
+// /reports/income-statement/pdf?start_date=2024-01-01&end_date=2024-12-31&include_detail=1
+// /reports/balance-sheet/pdf?as_of_date=2024-12-31&include_detail=1
+```
+
+**PDF Features:**
+- Header dengan logo dan nama perusahaan
+- Metadata: tanggal cetak, periode laporan, user
+- Table styling dengan border dan shading
+- Page numbering dan footer
+- Landscape/Portrait sesuai konten
+
+#### Export Excel (XLSX)
+```php
+// Generate Excel dengan PhpSpreadsheet
+Route::get('/reports/{type}/excel', [ReportController::class, 'exportExcel'])
+    ->name('reports.export.excel');
+
+// Contoh URL:
+// /reports/general-ledger/excel?account_id=1&start_date=2024-01-01
+// /reports/income-statement/excel?include_detail=1
+// /reports/balance-sheet/excel?as_of_date=2024-12-31
+```
+
+**Excel Features:**
+- Multiple worksheets untuk data kompleks
+- Cell formatting (currency, date, alignment)
+- Formula untuk kalkulasi
+- Auto column width
+- Header styling dengan background color
+- Freeze panes untuk header
+
+### 🎨 Styling & UI
+
+#### Responsive Design
+```css
+/* Mobile-first approach */
+@media (max-width: 768px) {
+  .report-table {
+    overflow-x: auto;
+  }
+  .filter-container {
+    flex-direction: column;
+  }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1024px) {
+  .report-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+}
+```
+
+#### Filter UI Components
+```html
+<!-- Modern filter dengan Tailwind CSS -->
+<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Filter inputs -->
+  </div>
+  <div class="flex justify-between items-center mt-4">
+    <button class="btn-primary">Terapkan Filter</button>
+    <button class="btn-secondary">Reset</button>
+  </div>
+</div>
+```
+
+#### Table Styling
+```html
+<!-- Responsive table dengan alternating rows -->
+<div class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Akun
+        </th>
+        <!-- ... columns ... -->
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <!-- Data rows dengan alternating background -->
+    </tbody>
+  </table>
+</div>
+```
+
+### ⚡ Performance Tips
+
+#### 1. Database Optimization
+```php
+// Index untuk query cepat
+Schema::table('journal_details', function (Blueprint $table) {
+    $table->index(['account_id', 'created_at']);
+    $table->index(['journal_entry_id', 'account_id']);
+});
+```
+
+#### 2. Query Optimization
+```php
+// Eager loading untuk menghindari N+1 queries
+$journalDetails = JournalDetail::with(['account', 'journalEntry'])
+    ->whereBetween('created_at', [$startDate, $endDate])
+    ->orderBy('created_at')
+    ->get();
+```
+
+#### 3. Caching untuk Report
+```php
+// Cache laporan untuk performa
+$cacheKey = "report.{$type}.{$filters_hash}";
+$report = Cache::remember($cacheKey, 3600, function () use ($filters) {
+    return $this->generateReport($filters);
+});
+```
+
+## 🔍 Contoh Penggunaan Fitur
+
+### Membuat Laporan Buku Besar
+```php
+// Via web interface
+1. Navigasi ke menu "Laporan" > "Buku Besar"
+2. Pilih periode: 01/01/2024 - 31/12/2024
+3. Filter akun: "1-1000 Kas" (opsional)
+4. Klik "Tampilkan Laporan"
+5. Export: Klik "Export PDF" atau "Export Excel"
+
+// Via URL langsung
+GET /reports/general-ledger?start_date=2024-01-01&end_date=2024-12-31&account_id=1
+```
+
+### Generate Laporan Laba Rugi dengan Detail
+```php
+// Dengan detail transaksi
+GET /reports/income-statement?start_date=2024-01-01&end_date=2024-12-31&include_detail=1
+
+// Export ke PDF
+GET /reports/income-statement/pdf?start_date=2024-01-01&end_date=2024-12-31&include_detail=1
+
+// Export ke Excel
+GET /reports/income-statement/excel?start_date=2024-01-01&end_date=2024-12-31&include_detail=1
+```
+
+### Cetak Neraca per Tanggal Tertentu
+```php
+// Neraca per 31 Desember 2024
+GET /reports/balance-sheet?as_of_date=2024-12-31
+
+// Dengan detail transaksi
+GET /reports/balance-sheet?as_of_date=2024-12-31&include_detail=1
+
+// Export langsung ke PDF
+GET /reports/balance-sheet/pdf?as_of_date=2024-12-31
+```
+
+### Filter Advanced dengan JavaScript
+```javascript
+// Auto-submit form ketika filter berubah
+document.getElementById('account_id').addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
+
+// Save filter state ke localStorage
+function saveFilterState() {
+    const filters = {
+        start_date: document.getElementById('start_date').value,
+        end_date: document.getElementById('end_date').value,
+        account_id: document.getElementById('account_id').value
+    };
+    localStorage.setItem('reportFilters', JSON.stringify(filters));
+}
+
+// Restore filter state
+function restoreFilterState() {
+    const saved = localStorage.getItem('reportFilters');
+    if (saved) {
+        const filters = JSON.parse(saved);
+        document.getElementById('start_date').value = filters.start_date || '';
+        document.getElementById('end_date').value = filters.end_date || '';
+        document.getElementById('account_id').value = filters.account_id || '';
+    }
+}
+```
+
+## ❗ Troubleshooting
+
+### Common Issues
+
+#### 1. PDF Export Error
+```bash
+# Jika error "Permission denied" pada folder temp
+chmod 755 storage/app/temp
+chown www-data:www-data storage/app/temp
+
+# Jika mPDF error "Unable to create output file"
+php artisan storage:link
+php artisan cache:clear
+```
+
+#### 2. Excel Export Memory Limit
+```php
+// Tambahkan di .env untuk file Excel besar
+PHP_MEMORY_LIMIT=512M
+
+// Atau di config/app.php
+ini_set('memory_limit', '512M');
+```
+
+#### 3. Filter Tidak Berfungsi
+```php
+// Pastikan validation rules benar di ReportController
+$request->validate([
+    'start_date' => 'required|date',
+    'end_date' => 'required|date|after_or_equal:start_date',
+    'account_id' => 'nullable|exists:accounts,id',
+    'include_detail' => 'nullable|boolean'
+]);
+```
+
+#### 4. Laporan Kosong
+```sql
+-- Cek data jurnal tersedia
+SELECT COUNT(*) FROM journal_entries 
+WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- Cek relasi account
+SELECT a.name, COUNT(jd.id) as transaction_count
+FROM accounts a 
+LEFT JOIN journal_details jd ON a.id = jd.account_id
+GROUP BY a.id, a.name;
+```
+
+#### 5. Performance Issues
+```php
+// Add database indexes
+php artisan make:migration add_indexes_for_reports
+
+// In migration file:
+Schema::table('journal_details', function (Blueprint $table) {
+    $table->index(['account_id', 'created_at']);
+    $table->index(['created_at', 'debit', 'credit']);
+});
+
+php artisan migrate
+```
+
+### FAQ
+
+**Q: Bagaimana cara mengubah format tanggal di laporan?**
+A: Edit file `config/app.php` dan ubah `'locale'` dan `'timezone'`, atau customize di masing-masing controller laporan.
+
+**Q: Apakah bisa custom logo di PDF?**
+A: Ya, ganti file logo di `public/images/logo.png` atau edit template PDF di ReportController.
+
+**Q: Bagaimana cara menambah tipe akun baru?**
+A: Tambahkan di enum `account_type` pada migration dan update validation di AccountController.
+
+**Q: Apakah support multi-currency?**
+A: Belum, saat ini hanya mendukung satu mata uang. Bisa dikembangkan dengan menambah field `currency` di table accounts.
+
+**Q: Bagaimana cara backup data laporan?**
+A: Gunakan export Excel untuk backup data, atau setup automated database backup dengan `mysqldump`.

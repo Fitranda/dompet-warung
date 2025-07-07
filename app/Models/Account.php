@@ -63,7 +63,7 @@ class Account extends Model
             $query->where('journal_entries.tanggal', '<=', $endDate);
         }
 
-        $totalDebit = $query->sum('journal_details.debit');
+        $totalDebit = $query->sum('journal_details.debet');
         $totalKredit = $query->sum('journal_details.kredit');
 
         // Get opening balance

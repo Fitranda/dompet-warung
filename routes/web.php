@@ -48,9 +48,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/trial-balance', [ReportController::class, 'trialBalance'])->name('trial-balance');
         Route::get('/general-ledger', [ReportController::class, 'generalLedger'])->name('general-ledger');
+        Route::get('/general-ledger/export-pdf', [ReportController::class, 'exportGeneralLedgerPdf'])->name('general-ledger.export-pdf');
+        Route::get('/general-ledger/export-excel', [ReportController::class, 'exportGeneralLedgerExcel'])->name('general-ledger.export-excel');
         Route::get('/worksheet', [ReportController::class, 'worksheet'])->name('worksheet');
         Route::get('/income-statement', [ReportController::class, 'incomeStatement'])->name('income-statement');
+        Route::get('/income-statement/export-pdf', [ReportController::class, 'exportIncomeStatementPdf'])->name('income-statement.export.pdf');
+        Route::get('/income-statement/export-excel', [ReportController::class, 'exportIncomeStatementExcel'])->name('income-statement.export.excel');
         Route::get('/balance-sheet', [ReportController::class, 'balanceSheet'])->name('balance-sheet');
+        Route::get('/balance-sheet/export-pdf', [ReportController::class, 'exportBalanceSheetPdf'])->name('balance-sheet.export.pdf');
+        Route::get('/balance-sheet/export-excel', [ReportController::class, 'exportBalanceSheetExcel'])->name('balance-sheet.export.excel');
     });
 });
 
