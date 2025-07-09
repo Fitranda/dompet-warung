@@ -222,6 +222,14 @@ class ReportController extends Controller
      */
     public function exportIncomeStatementPdf(Request $request)
     {
+        // Clear any existing output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        // Increase memory limit for large reports
+        ini_set('memory_limit', '512M');
+
         $startDate = $request->get('start_date', now()->startOfYear()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfYear()->format('Y-m-d'));
         $includeDetail = $request->get('include_detail', false);
@@ -238,6 +246,7 @@ class ReportController extends Controller
             'margin_right' => 15,
             'margin_top' => 16,
             'margin_bottom' => 16,
+            'tempDir' => storage_path('app/temp'), // Use custom temp directory
         ]);
 
         // Generate HTML content for PDF
@@ -245,7 +254,15 @@ class ReportController extends Controller
 
         $mpdf->WriteHTML($html);
 
+        // Force flush to free memory
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
         $filename = 'laporan_laba_rugi_' . $startDate . '_to_' . $endDate . '.pdf';
+
+        // Clear data from memory
+        unset($data, $html);
 
         return $mpdf->Output($filename, 'D');
     }
@@ -382,6 +399,14 @@ class ReportController extends Controller
      */
     public function exportBalanceSheetPdf(Request $request)
     {
+        // Clear any existing output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        // Increase memory limit for large reports
+        ini_set('memory_limit', '512M');
+
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
         $includeDetail = $request->get('include_detail', false);
 
@@ -397,6 +422,7 @@ class ReportController extends Controller
             'margin_right' => 15,
             'margin_top' => 16,
             'margin_bottom' => 16,
+            'tempDir' => storage_path('app/temp'), // Use custom temp directory
         ]);
 
         // Generate HTML content for PDF
@@ -404,7 +430,15 @@ class ReportController extends Controller
 
         $mpdf->WriteHTML($html);
 
+        // Force flush to free memory
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
         $filename = 'neraca_' . $endDate . '.pdf';
+
+        // Clear data from memory
+        unset($data, $html);
 
         return $mpdf->Output($filename, 'D');
     }
@@ -445,6 +479,14 @@ class ReportController extends Controller
      */
     public function exportGeneralLedgerPdf(Request $request)
     {
+        // Clear any existing output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        // Increase memory limit for large reports
+        ini_set('memory_limit', '512M');
+
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
         $accountId = $request->get('account_id');
@@ -462,6 +504,7 @@ class ReportController extends Controller
             'margin_right' => 15,
             'margin_top' => 16,
             'margin_bottom' => 16,
+            'tempDir' => storage_path('app/temp'), // Use custom temp directory
         ]);
 
         // Generate HTML content for PDF
@@ -469,7 +512,15 @@ class ReportController extends Controller
 
         $mpdf->WriteHTML($html);
 
+        // Force flush to free memory
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
         $filename = 'buku_besar_' . $startDate . '_to_' . $endDate . '.pdf';
+
+        // Clear data from memory
+        unset($ledgerData, $html);
 
         return $mpdf->Output($filename, 'D'); // 'D' for download
     }
@@ -552,7 +603,7 @@ class ReportController extends Controller
     {
         $html = '
         <style>
-            body { font-family: Arial, sans-serif; font-size: 10px; }
+            body { font-family: Arial, sans-serif; font-size: 9px; }
             .header { text-align: center; margin-bottom: 20px; }
             .company-name { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
             .report-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
@@ -560,7 +611,6 @@ class ReportController extends Controller
             .account-header {
                 background-color: #f8f9fa;
                 padding: 8px;
-                margin-top: 15px;
                 border: 1px solid #dee2e6;
                 font-weight: bold;
             }
@@ -571,19 +621,24 @@ class ReportController extends Controller
             }
             th, td {
                 border: 1px solid #dee2e6;
-                padding: 6px;
+                padding: 4px;
                 text-align: left;
+                vertical-align: top;
             }
             th {
                 background-color: #e9ecef;
                 font-weight: bold;
                 text-align: center;
+                font-size: 8px;
             }
             .text-right { text-align: right; }
             .text-center { text-align: center; }
             .opening-balance { background-color: #e3f2fd; }
             .closing-balance { background-color: #e8f5e8; font-weight: bold; }
-            .page-break { page-break-before: always; }
+            .account-header {
+                background-color: #f8f9fa !important;
+                font-weight: bold;
+            }
         </style>
 
         <div class="header">
@@ -593,33 +648,37 @@ class ReportController extends Controller
             <div>Tanggal Cetak: ' . date('d/m/Y H:i:s') . '</div>
         </div>';
 
+        // Create one continuous table for all accounts
+        $html .= '
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Akun</th>
+                    <th width="12%">Tanggal</th>
+                    <th width="15%">No. Jurnal</th>
+                    <th width="20%">Keterangan</th>
+                    <th width="11%">Debet</th>
+                    <th width="11%">Kredit</th>
+                    <th width="11%">Saldo</th>
+                </tr>
+            </thead>
+            <tbody>';
+
         foreach ($ledgerData as $index => $data) {
-            if ($index > 0) {
-                $html .= '<div class="page-break"></div>';
-            }
-
+            // Account header row
             $html .= '
-            <div class="account-header">
-                AKUN: ' . $data['account']->kode_akun . ' - ' . $data['account']->nama_akun . '<br>
-                Tipe: ' . ucfirst($data['account']->tipe_akun) . ' | Saldo Normal: ' . ucfirst($data['account']->saldo_normal) . '
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th width="12%">Tanggal</th>
-                        <th width="15%">No. Jurnal</th>
-                        <th width="30%">Keterangan</th>
-                        <th width="13%">Debet</th>
-                        <th width="13%">Kredit</th>
-                        <th width="17%">Saldo</th>
-                    </tr>
-                </thead>
-                <tbody>';
+                <tr class="account-header">
+                    <td colspan="7" style="padding: 8px; font-weight: bold; background-color: #f8f9fa;">
+                        <strong>' . $data['account']->kode_akun . ' - ' . $data['account']->nama_akun . '</strong><br>
+                        <small>Tipe: ' . ucfirst($data['account']->tipe_akun) . ' | Saldo Normal: ' . ucfirst($data['account']->saldo_normal) . '</small>
+                    </td>
+                </tr>';
 
             // Opening balance
-            $html .= '
+            if ($data['opening_balance'] != 0) {
+                $html .= '
                     <tr class="opening-balance">
+                        <td></td>
                         <td class="text-center">' . date('d/m/Y', strtotime($startDate)) . '</td>
                         <td class="text-center">-</td>
                         <td><strong>Saldo Awal</strong></td>
@@ -627,6 +686,7 @@ class ReportController extends Controller
                         <td class="text-right">-</td>
                         <td class="text-right"><strong>' . number_format(abs($data['opening_balance']), 0, ',', '.') . ($data['opening_balance'] < 0 ? ' (-)' : '') . '</strong></td>
                     </tr>';
+            }
 
             $runningBalance = $data['opening_balance'];
 
@@ -641,6 +701,7 @@ class ReportController extends Controller
 
                 $html .= '
                     <tr>
+                        <td></td>
                         <td class="text-center">' . date('d/m/Y', strtotime($entry->tanggal)) . '</td>
                         <td class="text-center">' . $entry->no_jurnal . '</td>
                         <td>' . ($entry->keterangan ?: $entry->jurnal_keterangan) . '</td>
@@ -653,6 +714,7 @@ class ReportController extends Controller
             // Closing balance
             $html .= '
                     <tr class="closing-balance">
+                        <td></td>
                         <td class="text-center">' . date('d/m/Y', strtotime($endDate)) . '</td>
                         <td class="text-center">-</td>
                         <td><strong>Saldo Akhir</strong></td>
@@ -661,9 +723,54 @@ class ReportController extends Controller
                         <td class="text-right"><strong>' . number_format(abs($data['closing_balance']), 0, ',', '.') . ($data['closing_balance'] < 0 ? ' (-)' : '') . '</strong></td>
                     </tr>';
 
+            // Add spacing between accounts (except for the last one)
+            if ($index < count($ledgerData) - 1) {
+                $html .= '
+                    <tr>
+                        <td colspan="7" style="height: 10px; border: none; background-color: #fff;"></td>
+                    </tr>';
+            }
+        }
+
+        $html .= '
+            </tbody>
+        </table>';
+
+        // Add summary section
+        if (!empty($ledgerData)) {
+            $totalDebit = 0;
+            $totalCredit = 0;
+            $accountCount = count($ledgerData);
+
+            foreach ($ledgerData as $data) {
+                foreach ($data['entries'] as $entry) {
+                    $totalDebit += $entry->debet ?? 0;
+                    $totalCredit += $entry->kredit ?? 0;
+                }
+            }
+
             $html .= '
-                </tbody>
-            </table>';
+            <div style="margin-top: 20px; padding: 10px; border: 1px solid #dee2e6; background-color: #f8f9fa;">
+                <strong>RINGKASAN LAPORAN</strong><br>
+                <table style="margin-top: 10px; border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; width: 30%;">Jumlah Akun:</td>
+                        <td style="border: none; font-weight: bold;">' . $accountCount . ' akun</td>
+                    </tr>
+                    <tr style="border: none;">
+                        <td style="border: none;">Total Debet:</td>
+                        <td style="border: none; font-weight: bold;">Rp ' . number_format($totalDebit, 0, ',', '.') . '</td>
+                    </tr>
+                    <tr style="border: none;">
+                        <td style="border: none;">Total Kredit:</td>
+                        <td style="border: none; font-weight: bold;">Rp ' . number_format($totalCredit, 0, ',', '.') . '</td>
+                    </tr>
+                    <tr style="border: none;">
+                        <td style="border: none;">Selisih:</td>
+                        <td style="border: none; font-weight: bold;">Rp ' . number_format(abs($totalDebit - $totalCredit), 0, ',', '.') . '</td>
+                    </tr>
+                </table>
+            </div>';
         }
 
         if (empty($ledgerData)) {
