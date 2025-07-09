@@ -261,10 +261,23 @@ class ReportController extends Controller
 
         $filename = 'laporan_laba_rugi_' . $startDate . '_to_' . $endDate . '.pdf';
 
-        // Clear data from memory
-        unset($data, $html);
+        // Get PDF content before cleanup
+        $pdfContent = $mpdf->Output('', 'S'); // Get as string first
 
-        return $mpdf->Output($filename, 'D');
+        // Clear data from memory
+        unset($data, $html, $mpdf);
+
+        // Force garbage collection
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**
@@ -437,10 +450,23 @@ class ReportController extends Controller
 
         $filename = 'neraca_' . $endDate . '.pdf';
 
-        // Clear data from memory
-        unset($data, $html);
+        // Get PDF content before cleanup
+        $pdfContent = $mpdf->Output('', 'S'); // Get as string first
 
-        return $mpdf->Output($filename, 'D');
+        // Clear data from memory
+        unset($data, $html, $mpdf);
+
+        // Force garbage collection
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**
@@ -519,10 +545,23 @@ class ReportController extends Controller
 
         $filename = 'buku_besar_' . $startDate . '_to_' . $endDate . '.pdf';
 
-        // Clear data from memory
-        unset($ledgerData, $html);
+        // Get PDF content before cleanup
+        $pdfContent = $mpdf->Output('', 'S'); // Get as string first
 
-        return $mpdf->Output($filename, 'D'); // 'D' for download
+        // Clear data from memory
+        unset($ledgerData, $html, $mpdf);
+
+        // Force garbage collection
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**

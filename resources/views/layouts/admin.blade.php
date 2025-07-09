@@ -7,6 +7,10 @@
 
     <title>{{ $title ?? 'Dashboard' }} - {{ config('app.name', 'Dompet Warung') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/logo.png') }}" type="image/x-icon">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
@@ -23,8 +27,9 @@
             <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto shadow-lg" style="background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);">
                 <!-- Logo -->
                 <div class="flex items-center flex-shrink-0 px-6">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3" style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3 overflow-hidden" style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);">
+                        <img src="{{ asset('images/logo.png') }}" alt="Dompet Warung Logo" class="w-8 h-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
@@ -154,32 +159,36 @@
             <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-50" @click="sidebarOpen = false" aria-hidden="true"></div>
 
             <div x-show="sidebarOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="relative flex-1 flex flex-col max-w-xs w-full shadow-lg" style="background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);">
-                <div class="absolute top-0 right-0 -mr-12 pt-2">
-                    <button @click="sidebarOpen = false" type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                        <span class="sr-only">Close sidebar</span>
-                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
 
                 <!-- Mobile sidebar content -->
-                <div class="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                    <!-- Logo -->
-                    <div class="flex items-center flex-shrink-0 px-6 mb-8">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3" style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
+                    <!-- Header dengan Logo dan Close Button -->
+                    <div class="flex items-center justify-between px-6 mb-8">
+                        <!-- Logo Section -->
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3 overflow-hidden" style="background: linear-gradient(135deg, #14B8A6 0%, #0F766E 100%);">
+                                <img src="{{ asset('images/logo.png') }}" alt="Dompet Warung Logo" class="w-8 h-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-white">Dompet Warung</h1>
+                                <p class="text-xs" style="color: #94A3B8;">Sistem Akuntansi</p>
+                            </div>
+                        </div>
+
+                        <!-- Close Button -->
+                        <button @click="sidebarOpen = false" type="button" class="flex items-center justify-center h-8 w-8 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-slate-700 transition-colors duration-150">
+                            <span class="sr-only">Close sidebar</span>
+                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-white">Dompet Warung</h1>
-                            <p class="text-xs" style="color: #94A3B8;">Sistem Akuntansi</p>
-                        </div>
+                        </button>
                     </div>
 
-                    <!-- Mobile Navigation -->
-                    <nav class="px-2 space-y-1" x-data="{
+                    <!-- Mobile Navigation - Sama persis dengan Desktop -->
+                    <nav class="mt-8 flex-1 px-2 space-y-1" x-data="{
                         mobileDropdowns: {
                             masterData: false,
                             transactions: false,
@@ -190,8 +199,8 @@
                         }
                     }">
                         <!-- Dashboard -->
-                        <a href="{{ route('dashboard') }}" class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} transition-colors duration-150">
-                            <svg class="mr-3 h-5 w-5 {{ request()->routeIs('dashboard') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('dashboard') }}" class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-300 hover:text-white hover:bg-slate-700' }}" {{ request()->routeIs('dashboard') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                            <svg class="mr-3 h-5 w-5 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v4m8-4v4"></path>
                             </svg>
@@ -200,9 +209,9 @@
 
                         <!-- Master Data Dropdown -->
                         <div class="mt-4">
-                            <button @click="toggleMobileDropdown('masterData')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors duration-150">
+                            <button @click="toggleMobileDropdown('masterData')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-150">
                                 <div class="flex items-center">
-                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
                                     </svg>
                                     Master Data
@@ -212,14 +221,14 @@
                                 </svg>
                             </button>
                             <div x-show="mobileDropdowns.masterData" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                                <a href="{{ route('accounts.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('accounts.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('accounts.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('accounts.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('accounts.*') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('accounts.*') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('accounts.*') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                     Kode Akun
                                 </a>
-                                <a href="{{ route('opening-balances.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('opening-balances.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('opening-balances.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('opening-balances.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('opening-balances.*') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('opening-balances.*') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('opening-balances.*') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                     </svg>
                                     Saldo Awal
@@ -229,9 +238,9 @@
 
                         <!-- Transaksi Dropdown -->
                         <div class="mt-2">
-                            <button @click="toggleMobileDropdown('transactions')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors duration-150">
+                            <button @click="toggleMobileDropdown('transactions')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-150">
                                 <div class="flex items-center">
-                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                     </svg>
                                     Transaksi
@@ -241,32 +250,26 @@
                                 </svg>
                             </button>
                             <div x-show="mobileDropdowns.transactions" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                                <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('journal-entries.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('transactions.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('journal-entries.quick-templates') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.quick-templates') ? 'style=background:linear-gradient(135deg,#3B82F6_0%,#1E40AF_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    Jurnal Singkat
+                                </a>
+                                <a href="{{ route('journal-entries.index') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('journal-entries.*') && !request()->routeIs('journal-entries.quick-templates') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                     </svg>
                                     Jurnal Umum
-                                </a>
-                                <a href="#" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                    </svg>
-                                    Kas Masuk
-                                </a>
-                                <a href="#" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                    </svg>
-                                    Kas Keluar
                                 </a>
                             </div>
                         </div>
 
                         <!-- Laporan Dropdown -->
                         <div class="mt-2">
-                            <button @click="toggleMobileDropdown('reports')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors duration-150">
+                            <button @click="toggleMobileDropdown('reports')" class="group flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-150">
                                 <div class="flex items-center">
-                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                     Laporan
@@ -276,32 +279,20 @@
                                 </svg>
                             </button>
                             <div x-show="mobileDropdowns.reports" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="ml-6 mt-2 space-y-1">
-                                <a href="{{ route('reports.general-ledger') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.general-ledger') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.general-ledger') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('reports.general-ledger') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.general-ledger') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.general-ledger') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.general-ledger') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                     </svg>
                                     Buku Besar
                                 </a>
-                                <a href="{{ route('reports.trial-balance') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.trial-balance') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.trial-balance') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                    </svg>
-                                    Neraca Saldo
-                                </a>
-                                <a href="{{ route('reports.worksheet') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.worksheet') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.worksheet') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                                    </svg>
-                                    Neraca Lajur
-                                </a>
-                                <a href="{{ route('reports.income-statement') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.income-statement') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.income-statement') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('reports.income-statement') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.income-statement') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.income-statement') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.income-statement') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                                     </svg>
                                     Laba Rugi
                                 </a>
-                                <a href="{{ route('reports.balance-sheet') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('reports.balance-sheet') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }} transition-colors duration-150">
-                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.balance-sheet') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('reports.balance-sheet') }}" class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('reports.balance-sheet') ? 'text-white' : 'text-gray-400 hover:text-gray-300 hover:bg-slate-700' }}" {{ request()->routeIs('reports.balance-sheet') ? 'style=background:linear-gradient(135deg,#14B8A6_0%,#0F766E_100%);' : '' }}>
+                                    <svg class="mr-3 h-4 w-4 {{ request()->routeIs('reports.balance-sheet') ? 'text-white' : 'text-gray-400 group-hover:text-gray-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                     </svg>
                                     Neraca

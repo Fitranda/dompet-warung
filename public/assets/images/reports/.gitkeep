@@ -1,0 +1,6 @@
+# Folder untuk menyimpan gambar laporan
+# Letakkan file berikut di folder ini:
+# - company-logo.png (Logo perusahaan untuk header PDF)
+# - letterhead.png (Kop surat jika ada)
+# - watermark.png (Watermark untuk dokumen)
+# - signature.png (Tanda tangan digital)
