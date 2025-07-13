@@ -341,7 +341,7 @@
                                class="w-full px-3 py-2 rounded-lg border text-sm text-right focus:outline-none focus:ring-2"
                                style="border-color: #D1D5DB; focus:border-color: #14B8A6; focus:ring-color: #14B8A6;"
                                onchange="calculateTotals(); syncDesktopRow(${detailIndex})"
-                               oninput="clearKreditMobile(this, ${detailIndex})">
+                               oninput="clearDebetMobile(this, ${detailIndex})">
                     </div>
                 </div>
             `;
