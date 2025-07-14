@@ -308,7 +308,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Add existing details
             existingDetails.forEach(detail => {
-                addJournalDetail(detail.account_id, detail.debit, detail.kredit);
+                addJournalDetail(detail.account_id, detail.debet, detail.kredit);
             });
 
             // If no existing details, add 2 empty rows

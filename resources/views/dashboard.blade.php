@@ -200,7 +200,7 @@
                                     </div>
                                     <div class="text-right flex-shrink-0">
                                         <div class="text-xs md:text-sm font-bold text-green-600">
-                                            Rp {{ number_format($entry->total_debit, 0, ',', '.') }}
+                                            Rp {{ number_format($entry->total_debet, 0, ',', '.') }}
                                         </div>
                                         <div class="text-xs text-gray-400">
                                             {{ $entry->created_at->diffForHumans() }}

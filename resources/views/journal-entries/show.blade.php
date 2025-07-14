@@ -129,7 +129,7 @@
                                     <tr>
                                         <td colspan="2" class="px-4 py-3 text-sm font-semibold" style="color: #374151;">Total</td>
                                         <td class="px-4 py-3 text-right text-sm font-semibold" style="color: #059669;">
-                                            Rp {{ number_format($journalEntry->total_debit, 0, ',', '.') }}
+                                            Rp {{ number_format($journalEntry->total_debet, 0, ',', '.') }}
                                         </td>
                                         <td class="px-4 py-3 text-right text-sm font-semibold" style="color: #DC2626;">
                                             Rp {{ number_format($journalEntry->total_kredit, 0, ',', '.') }}
@@ -137,7 +137,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="4" class="px-4 py-2 text-center">
-                                            @if($journalEntry->total_debit == $journalEntry->total_kredit)
+                                            @if($journalEntry->total_debet == $journalEntry->total_kredit)
                                                 <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                     Balance ✓
                                                 </span>
